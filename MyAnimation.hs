@@ -6,9 +6,7 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         neuron 400 170 3 260
         `plus`
-        withPaint (always red)  (rotatedNeuron 530 300)
-        `plus`
-        drawCircle 400 300 30 red red
+        withPaint (always black)  (rotatedNeuron 530 300)
         `plus`
         positiveBranch 200 300 (pi / 4)
         `plus`
@@ -141,7 +139,6 @@ positiveBranch x y a =  translate (always (x + (100 * cos(a)), y)) (rotate (alwa
 
 negativeBranch :: Double -> Double -> Double -> Animation
 negativeBranch x y a =  translate (always (x - (100 * cos(a)), y)) (rotate (always 315) (rect (always 3) (always 65)))
-
 
 neuron :: Double -> Double -> Double -> Double -> Animation
 neuron x y w h  = translate (always (x, y)) (rect (always w) (always h))
