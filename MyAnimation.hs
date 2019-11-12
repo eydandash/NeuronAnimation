@@ -1,12 +1,10 @@
 module MyAnimation where
 import Animation
 
-type circle = Animation
-
 picture :: Animation
 picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800) (always 600))))
         `plus`
-        neuron 400 170 3 260 neuronOne
+        neuron 400 170 3 260
         `plus`
         rotatedNeuron 530 300
         `plus`
@@ -26,13 +24,13 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         negativeBranch 595 302 (pi / 4)
         `plus`
-        drawCircle 400 120 30 black
+        drawEmptyCircle 400 120 30 black
         `plus`
-        drawCircle 400 480 30 black
+        drawEmptyCircle 400 480 30 black
         `plus`
-        drawCircle 225 300 30 black
+        drawEmptyCircle 225 300 30 black
         `plus`
-        drawCircle 575 300 30 black
+        drawEmptyCircle 575 300 30 black
         `plus`
         drawLine 380 500 3 100 45 black
         `plus`
@@ -86,21 +84,21 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         drawLine 540 570 3 50 90 black
         `plus`
-        drawCircle 525 605 30 black
+        drawEmptyCircle 525 605 30 black
         `plus`
-        drawCircle 277 605 30 black
+        drawEmptyCircle 277 605 30 black
         `plus`
-        drawCircle 283 0 21 black
+        drawEmptyCircle 283 0 21 black
         `plus`
-        drawCircle 520 0 21 black
+        drawEmptyCircle 520 0 21 black
         `plus`
-        drawCircle 705 415 30 black
+        drawEmptyCircle 705 415 30 black
         `plus`
-        drawCircle 705 178 30 black
+        drawEmptyCircle 705 178 30 black
         `plus`
-        drawCircle 96 425 30 black
+        drawEmptyCircle 96 425 30 black
         `plus`
-        drawCircle 96 175 30 black
+        drawEmptyCircle 96 175 30 black
         `plus`
         drawLine 810 410 3 75 90 black
         `plus`
@@ -117,9 +115,22 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         drawLine 700 445 3 160 0 black
         `plus`
         drawLine 700 0 3 148 0 black
+        `plus`
+        -- Big start circle
+        drawMovingCircle [(95, 0), (96, 175)] (always red) 30
+        `plus`
+        -- Big start circle
+        drawMovingCircle [(0, 175), (65, 175), (96, 175)] (always red) 30
+        `plus`
+        -- Small second circle
+        drawMovingCircle [(96, 175), (225, 300)] (always red) 15
+        `plus`
+        -- Smaller third circle
+        drawMovingCircle [(225, 300), (575, 300)] (always red) 8
 
-
-
+drawMovingCircle :: [(Double, Double)] -> Varying Colour -> Double -> Animation
+drawMovingCircle l c r = translate (cycleSmooth 1 l) (withPaint c (circle (always r)))
+        
 drawLine :: Double -> Double -> Double -> Double -> Double -> Colour -> Animation
 drawLine x y w h a c = translate (always (x, y)) (rotate (always a) (withPaint (always c) (rect (always w) (always h))))
 
@@ -129,14 +140,17 @@ positiveBranch x y a =  translate (always (x + (100 * cos(a)), y)) (rotate (alwa
 negativeBranch :: Double -> Double -> Double -> Animation
 negativeBranch x y a =  translate (always (x - (100 * cos(a)), y)) (rotate (always 315) (rect (always 3) (always 65)))
 
-neuron :: Double -> Double -> Double -> Double -> String -> Animation
-neuron x y w h n = translate (always (x, y)) (rect (always w) (always h))
+neuron :: Double -> Double -> Double -> Double -> Animation
+neuron x y w h  = translate (always (x, y)) (rect (always w) (always h))
 
 rotatedNeuron :: Double -> Double -> Animation
 rotatedNeuron x y = translate (always (x, y)) (rotate (always 90) (rect (always 3) (always 260)))
 
-drawCircle :: Double -> Double -> Double -> Colour -> String -> Animation
-drawCircle x y r c n = translate (always (x, y)) (withBorder (always c) (always 3) (withoutPaint (circle (always r))))
+drawEmptyCircle :: Double -> Double -> Double -> Colour -> Animation
+drawEmptyCircle x y r c = translate (always (x, y)) (withBorder (always c) (always 3) (withoutPaint (circle (always r))))
+
+drawFullCircle :: Double -> Double -> Double -> Colour -> Animation
+drawFullCircle x y r c = translate (always (x, y)) (withPaint (always c) (circle (always r)))
 
 test :: IO()
 test = writeFile "test.svg" (svg 800 600 picture)
