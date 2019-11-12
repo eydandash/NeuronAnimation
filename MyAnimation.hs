@@ -1,14 +1,16 @@
 module MyAnimation where
 import Animation
 
-type circle = Animation
+--type circle = Animation
 
 picture :: Animation
 picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800) (always 600))))
         `plus`
-        neuron 400 170 3 260 neuronOne
+        withPaint (always red) (neuron 400 170)
         `plus`
-        rotatedNeuron 530 300
+        withPaint (always red)  (rotatedNeuron 530 300)
+        `plus`
+        drawCircle 400 300 30 red red
         `plus`
         positiveBranch 200 300 (pi / 4)
         `plus`
@@ -26,13 +28,13 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         negativeBranch 595 302 (pi / 4)
         `plus`
-        drawCircle 400 120 30 black
+        drawCircle 400 120 30 black black
         `plus`
-        drawCircle 400 480 30 black
+        drawCircle 400 480 30 black black
         `plus`
-        drawCircle 225 300 30 black
+        drawCircle 225 300 30 black black
         `plus`
-        drawCircle 575 300 30 black
+        drawCircle 575 300 30 black black
         `plus`
         drawLine 380 500 3 100 45 black
         `plus`
@@ -86,21 +88,21 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         drawLine 540 570 3 50 90 black
         `plus`
-        drawCircle 525 605 30 black
+        drawCircle 525 605 30 black black
         `plus`
-        drawCircle 277 605 30 black
+        drawCircle 277 605 30 black black
         `plus`
-        drawCircle 283 0 21 black
+        drawCircle 283 0 21 black black
         `plus`
-        drawCircle 520 0 21 black
+        drawCircle 520 0 21 black black
         `plus`
-        drawCircle 705 415 30 black
+        drawCircle 705 415 30 black black
         `plus`
-        drawCircle 705 178 30 black
+        drawCircle 705 178 30 black black
         `plus`
-        drawCircle 96 425 30 black
+        drawCircle 96 425 30 black black
         `plus`
-        drawCircle 96 175 30 black
+        drawCircle 96 175 30 black black
         `plus`
         drawLine 810 410 3 75 90 black
         `plus`
@@ -129,14 +131,14 @@ positiveBranch x y a =  translate (always (x + (100 * cos(a)), y)) (rotate (alwa
 negativeBranch :: Double -> Double -> Double -> Animation
 negativeBranch x y a =  translate (always (x - (100 * cos(a)), y)) (rotate (always 315) (rect (always 3) (always 65)))
 
-neuron :: Double -> Double -> Double -> Double -> String -> Animation
-neuron x y w h n = translate (always (x, y)) (rect (always w) (always h))
+neuron :: Double -> Double -> Animation
+neuron x y = translate (always (x, y)) (rect (always 3) (always 260))
 
 rotatedNeuron :: Double -> Double -> Animation
 rotatedNeuron x y = translate (always (x, y)) (rotate (always 90) (rect (always 3) (always 260)))
 
-drawCircle :: Double -> Double -> Double -> Colour -> String -> Animation
-drawCircle x y r c n = translate (always (x, y)) (withBorder (always c) (always 3) (withoutPaint (circle (always r))))
+drawCircle :: Double -> Double -> Double -> Colour -> Colour -> Animation
+drawCircle x y r o i  = translate (always (x, y)) (withBorder (always o) (always 3) (withPaint (always i) (circle (always r))))
 
 test :: IO()
 test = writeFile "test.svg" (svg 800 600 picture)
