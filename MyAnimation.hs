@@ -4,37 +4,37 @@ import Animation
 picture :: Animation
 picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800) (always 600))))
         `plus`
-        neuron 400 170 3 260
+        withPaint (always (hsl 0 0 0.5)) (neuron 400 170 3 260)
         `plus`
         withPaint (always black)  (rotatedNeuron 530 300)
         `plus`
-        positiveBranch 200 300 (pi / 4)
+        positiveBranch 200 300 (pi / 4) black
         `plus`
-        positiveBranch 330 430 (pi / 4)
+        positiveBranch 330 430 (pi / 4) (hsl 0 0 0.5)
         `plus`
-        positiveBranch 375 125 (pi / 4)
+        positiveBranch 375 125 (pi / 4) (hsl 0 0 0.5)
         `plus`
-        positiveBranch 500 255 (pi / 4)
+        positiveBranch 500 255 (pi / 4) black
         `plus`
-        negativeBranch 295 255 (pi / 4)
+        negativeBranch 295 255 (pi / 4) black
         `plus`
-        negativeBranch 425 125 (pi / 4)
+        negativeBranch 425 125 (pi / 4) (hsl 0 0 0.5)
         `plus`
-        negativeBranch 470 430 (pi / 4)
+        negativeBranch 470 430 (pi / 4) (hsl 0 0 0.5)
         `plus`
-        negativeBranch 595 302 (pi / 4)
+        negativeBranch 595 302 (pi / 4) black
         `plus`
-        drawEmptyCircle 400 120 30 black
+        drawEmptyCircle 400 120 30 (hsl 0 0 0.5)
         `plus`
-        drawEmptyCircle 400 480 30 black
+        drawEmptyCircle 400 480 30 (hsl 0 0 0.5)
         `plus`
         drawEmptyCircle 225 300 30 black
         `plus`
         drawEmptyCircle 575 300 30 black
         `plus`
-        drawLine 380 500 3 100 45 black
+        drawLine 380 500 3 100 45 (hsl 0 0 0.5)
         `plus`
-        drawLine 420 500 3 100 315 black
+        drawLine 420 500 3 100 315 (hsl 0 0 0.5)
         `plus`
         drawLine 670 210 3 100 45 black
         `plus`
@@ -44,17 +44,17 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         drawLine 130 210 3 100 315 black
         `plus`
-        drawLine 490 25 3 100 45 black
+        drawLine 490 25 3 100 45 (hsl 0 0 0.5)
         `plus`
-        drawLine 310 25 3 100 315 black
+        drawLine 310 25 3 100 315 (hsl 0 0 0.5)
         `plus`
-        drawLine 310 0 3 25 0 black
+        drawLine 310 0 3 25 0 (hsl 0 0 0.5)
         `plus`
-        drawLine 312 23 3 50 90 black
+        drawLine 312 23 3 50 90 (hsl 0 0 0.5)
         `plus`
-        drawLine 490 0 3 25 0 black
+        drawLine 490 0 3 25 0 (hsl 0 0 0.5)
         `plus`
-        drawLine 540 23 3 50 90 black
+        drawLine 540 23 3 50 90 (hsl 0 0 0.5)
         `plus`
         drawLine 130 390 3 50 0 black
         `plus`
@@ -76,21 +76,21 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         drawLine 720 380 3 50 90 black
         `plus`
-        drawLine 310 570 3 50 0 black
+        drawLine 310 570 3 50 0 (hsl 0 0 0.5)
         `plus`
-        drawLine 312 570 3 50 90 black
+        drawLine 312 570 3 50 90 (hsl 0 0 0.5)
         `plus`
-        drawLine 490 570 3 50 0 black
+        drawLine 490 570 3 50 0 (hsl 0 0 0.5)
         `plus`
-        drawLine 540 570 3 50 90 black
+        drawLine 540 570 3 50 90 (hsl 0 0 0.5)
         `plus`
-        drawEmptyCircle 525 605 30 black
+        drawEmptyCircle 525 605 30 (hsl 0 0 0.5)
         `plus`
-        drawEmptyCircle 277 605 30 black
+        drawEmptyCircle 277 605 30 (hsl 0 0 0.5)
         `plus`
-        drawEmptyCircle 283 0 21 black
+        drawEmptyCircle 283 0 21 (hsl 0 0 0.5)
         `plus`
-        drawEmptyCircle 520 0 21 black
+        drawEmptyCircle 520 0 21 (hsl 0 0 0.5)
         `plus`
         drawEmptyCircle 705 415 30 black
         `plus`
@@ -116,17 +116,18 @@ picture = withBorder (always black) (always 1) ((withoutPaint (rect (always 800)
         `plus`
         drawLine 700 0 3 148 0 black
         `plus`
-        -- Big start circle
-        drawMovingCircle [(95, 0), (96, 175)] (always red) 30
+        drawMovingCircle [(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)] (always red) 30
         `plus`
-        -- Big start circle
-        drawMovingCircle [(0, 175), (65, 175), (96, 175)] (always red) 30
+        drawMovingCircle [(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)] (always red) 30
         `plus`
-        -- Small second circle
-        drawMovingCircle [(96, 175), (225, 300)] (always red) 15
+        drawMovingCircle [(810, 175), (705, 178), (575, 300), (225, 300), (96, 175), (0, 175), (0, -250), (-200, -200), (900, -250)] (always red) 30
         `plus`
-        -- Smaller third circle
-        drawMovingCircle [(225, 300), (575, 300)] (always red) 8
+        drawMovingCircle (reverse [(810, 175), (705, 178), (575, 300), (225, 300), (96, 175), (0, 175), (0, -250), (-200, -200), (900, -250)]) (always red) 30
+        `plus`
+        drawMovingCircle (reverse [(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)]) (always red) 30
+        `plus`
+        drawMovingCircle (reverse [(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)]) (always red) 30
+        
 
 drawMovingCircle :: [(Double, Double)] -> Varying Colour -> Double -> Animation
 drawMovingCircle l c r = translate (cycleSmooth 1 l) (withPaint c (circle (always r)))
@@ -134,11 +135,11 @@ drawMovingCircle l c r = translate (cycleSmooth 1 l) (withPaint c (circle (alway
 drawLine :: Double -> Double -> Double -> Double -> Double -> Colour -> Animation
 drawLine x y w h a c = translate (always (x, y)) (rotate (always a) (withPaint (always c) (rect (always w) (always h))))
 
-positiveBranch :: Double -> Double -> Double -> Animation
-positiveBranch x y a =  translate (always (x + (100 * cos(a)), y)) (rotate (always 45) (rect (always 3) (always 65)))
+positiveBranch :: Double -> Double -> Double -> Colour -> Animation
+positiveBranch x y a c =  translate (always (x + (100 * cos(a)), y)) (rotate (always 45) (withPaint (always c) (rect (always 3) (always 65))) )
 
-negativeBranch :: Double -> Double -> Double -> Animation
-negativeBranch x y a =  translate (always (x - (100 * cos(a)), y)) (rotate (always 315) (rect (always 3) (always 65)))
+negativeBranch :: Double -> Double -> Double -> Colour -> Animation
+negativeBranch x y a c =  translate (always (x - (100 * cos(a)), y)) (rotate (always 315) (withPaint (always c) (rect (always 3) (always 65))) )
 
 neuron :: Double -> Double -> Double -> Double -> Animation
 neuron x y w h  = translate (always (x, y)) (rect (always w) (always h))
