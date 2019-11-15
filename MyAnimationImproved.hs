@@ -11,18 +11,25 @@ module MyAnimation where
 
     picture :: Animation
     picture = 
+            -- Border of canvas
             drawBorder
             `plus`
+            -- First row of neurons
             combine (map drawNeuron rowOne)
             `plus`
+            -- Second row of neurons
             combine (map drawNeuron rowTwo)
             `plus`
+            -- Third row of neurons
             combine (map drawNeuron rowThree)
             `plus`
+            -- Fourth row of neurons
             combine (map drawNeuron rowFour)
             `plus`
+            -- Fifth row of neurons
             combine (map drawNeuron rowFive)
             `plus`
+            -- Sixth row of neurons
             combine (map drawNeuron rowSix)
             `plus`
             drawMovingCircle [(-50, 50), (-50, 50), (850, 51), (850, 51)] alwaysRed 20
@@ -47,8 +54,6 @@ module MyAnimation where
     drawNeuron :: (Point, Point) -> Animation
     drawNeuron ((x1, y1), (x2, y2)) = 
         drawFullCircle x1 y1 (dist / 5) black
-        -- `plus`
-        -- drawFullCircle x2 y2 3 black
         `plus`
         drawLine (x1, y1, 3, dist, angle, black)
         `plus`
