@@ -1,6 +1,9 @@
 module MyAnimation where
 import Animation
 
+grey :: Colour
+grey = hsl 0 0 0.5
+
 picture :: Animation
 picture = 
         withBorder (always black) (always 1) ((withoutPaint (rect (always 800) (always 600))))
@@ -87,9 +90,13 @@ picture =
             ]
         )
         `plus`
-        drawMovingCircle [(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)] (always red) 30
-        `plus`
-        drawMovingCircle [(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)] (always red) 30
+        combine (map drawMovingCircle [
+            ([(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)], (always red), 30),
+            ([(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)], (always red), 30)
+        ])
+        -- drawMovingCircle [(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)] (always red) 30
+        -- `plus`
+        -- drawMovingCircle [(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)] (always red) 30
         `plus`
         drawMovingCircle [(810, 175), (705, 178), (575, 300), (225, 300), (96, 175), (0, 175), (0, -250), (-200, -200), (900, -250)] (always red) 30
         `plus`
