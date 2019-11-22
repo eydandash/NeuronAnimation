@@ -60,14 +60,15 @@ module MyAnimation where
     clouds :: Animation
     clouds = 
         combine (
-            [drawCloud (cycleSmooth (amount/20) (movePoints 0 (amount * 5) points)) 20 40 (always cloudColour) | amount <- [1..2]]
-            ++
-            [drawCloud (cycleSmooth (amount/20) (movePoints 0 (amount * 5) reversepoints)) 20 40 (always cloudColour) | amount <- [1..2]]
-            ++
-            [drawCloud (cycleSmooth (amount/10) (movePoints 50 (amount * 50) points)) 20 40 (always cloudColour) | amount <- [1..2]]
-            ++
-            [drawCloud (cycleSmooth (amount/10) (movePoints 50 (amount * 50) reversepoints)) 20 40 (always cloudColour) | amount <- [1..2]]
-            )
+            [
+                drawCloud (cycleSmooth (amount/amountFactor) (movePoints 0 (amount * moveFactor) pointList)) 20 40 (always cloudColour)
+                |
+                amountFactor <- [20,10],
+                amount <- [1..2],
+                moveFactor <- [5,5,50,50],
+                pointList <- [points, reversepoints]
+            ]
+        )
         where
             points = [(x, 100) | x <- ([y,(y+10)..800] ++ [800,790..(y)])]
             reversepoints = [(x, 100) | x <- ([800,790..(-50)] ++ [-50,-40..800])]
