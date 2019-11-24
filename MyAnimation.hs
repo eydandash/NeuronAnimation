@@ -1,136 +1,119 @@
+{-
+    Authors:
+    
+    LOGIN ID - NAME - STUDENT CARD ID
+    
+    ACWH025 - Kaleem Peeroo - 170012463
+    ACSD227 - Esraa Dandash - 160040246
+-}
+
 module MyAnimation where
-import Animation
+    import Animation
 
-grey :: Colour
-grey = hsl 0 0 0.5
+    picture :: Animation
+    picture = 
+        -- The green grass background
+        background
+        `plus`
+        road
+        `plus`
+        sky
+        `plus`
+        clouds
+        `plus`
+        lamp (380,300) (50,600)
+        `plus`
+        lamp (420,300) (750,600)
 
-picture :: Animation
-picture = 
-        withBorder (always black) (always 1) ((withoutPaint (rect (always 800) (always 600))))
+    {-
+        Constant definitions for later use
+    -}
+
+    skyColour :: Colour
+    skyColour = hsl 169 0.96 0.47
+
+    cloudColour :: Colour
+    cloudColour = hsl 159 0.96 0.79
+
+    -- Greenish colour to show grass
+    backgroundColour :: Colour
+    backgroundColour = hsl 138 0.96 0.32
+
+    -- Yellowish yellow
+    lampColour :: Colour
+    lampColour = hsl 166 0 0.44
+
+    -- Lamp travels from start point to end point
+    lamp :: Point -> Point -> Animation
+    lamp (x1,y1) (x2,y2) = 
+        rectangle points width height (always black)
         `plus`
-        withPaint (always (hsl 0 0 0.5)) (neuron 400 170 3 260)
-        `plus`
-        withPaint (always black)  (rotatedNeuron 530 300)
-        `plus`
+        rectangle lightpoints width lightheights (always yellow)
+        where
+            width = repeatSmooth 5 [(1, 5), (2, 15), (3,25)]
+            height = repeatSmooth 20 [(1, 20), (2, 210), (3,400)]
+            lightheights = repeatSmooth 20 [(1, 2), (2, 11), (3,20)]
+            points = repeatSmooth (x1,y1) [(1, (x1,y1)), (2, ( ( x1 + x2 ) / 2, ( y1 + y2 ) /2 )), (3, (x2,y2))]
+            lightpoints = repeatSmooth (x1,y1) [(1, (x1,y1)), (2, ( ( x1 + x2 ) / 2, ( y1 + y2 ) /2 )), (3, (x2,y2))]
+
+    -- Draws the multiple clouds while varying the speeds and positions. Draws two clouds per list. Amount of clouds can be changed through the amount list.
+    clouds :: Animation
+    clouds = 
         combine (
-            map drawEmptyCircle 
             [
-                (400, 120, 30, (hsl 0 0 0.5)),
-                (400, 480, 30, (hsl 0 0 0.5)),
-                (225, 300, 30, black),
-                (575, 300, 30, black),
-                (525, 605, 30, (hsl 0 0 0.5)),
-                (277, 605, 30, (hsl 0 0 0.5)),
-                (283, 0, 21, (hsl 0 0 0.5)),
-                (520, 0, 21, (hsl 0 0 0.5)),
-                (705, 415, 30, black),
-                (705, 178, 30, black),
-                (96, 425, 30, black),
-                (96, 175, 30, black)
+                cloud (cycleSmooth (amount/amountFactor) (movePoints 0 (amount * moveFactor) pointList)) 20 40 (always cloudColour)
+                |
+                amountFactor <- [20,10],
+                amount <- [1..2],
+                moveFactor <- [5,5,50,50],
+                pointList <- [points, reversepoints]
             ]
         )
+        where
+            points = [(x, 100) | x <- ([100,110..800] ++ [800,790..100])]
+            reversepoints = [(x, 100) | x <- ([800,790..(-50)] ++ [-50,-40..800])]
+    
+    -- Draws a blue rectangle over the top half of the picture representing the sky.
+    sky :: Animation
+    sky = rectangle (always (0,0)) (always 800) (always 300) (always skyColour)
+    
+    -- Draws a green rectangle behind the road representing the green grass in the background (or the side of the road).
+    background :: Animation
+    background = 
+        rectangle (always (0, 300)) (always 800) (always 300) (always backgroundColour)
+    
+    -- Draws a rectangle depending on its input of width, height, colour and can even move depending on the points input.
+    rectangle :: Varying Point -> Varying Length -> Varying Length -> Varying Colour -> Animation
+    rectangle points width height colour = withPaint colour (translate points (rect width height))
+
+    -- Draws a grey polygon first. Then draws a white polygon on top of it. Then draws two rectangles that go on top of the white polygon which shows an illusion the white polygon being seperated.
+    road :: Animation
+    road = 
+        -- Draws the grey polygon giving the illusion of a road
+        withPaint (always grey) (polygon [(380, 300), (420, 300), (600, 600), (200, 600)])
         `plus`
-        combine (
-            map drawLine 
-            [
-                (380, 500, 3, 100, 45, (hsl 0 0 0.5)),
-                (420, 500, 3, 100, 315, (hsl 0 0 0.5)),
-                (670, 210, 3, 100, 45, black),
-                (600, 315, 3, 100, 315, black),
-                (200, 320, 3, 100, 45, black),
-                (130, 210, 3, 100, 315, black),
-                (490, 25, 3, 100, 45, (hsl 0 0 0.5)),
-                (310, 25, 3, 100, 315, (hsl 0 0 0.5)),
-                (310, 0, 3, 25, 0, (hsl 0 0 0.5)),
-                (312, 23, 3, 50, 90,  (hsl 0 0 0.5)),
-                (490, 0, 3, 25, 0 , (hsl 0 0 0.5)),
-                (540, 23, 3, 50, 90,  (hsl 0 0 0.5)),
-                (130, 390, 3, 50, 0 , black),
-                (130, 390, 3, 50, 90,  black),
-                (130, 160, 3, 50, 0 , black),
-                (130, 208, 3, 50, 90,  black),
-                (130, 160, 3, 50, 0 , black),
-                (130, 208, 3, 50, 90,  black),
-                (670, 160, 3, 50, 0 , black),
-                (720, 210, 3, 50, 90,  black),
-                (670, 380, 3, 50, 0 , black),
-                (720, 380, 3, 50, 90,  black),
-                (310, 570, 3, 50, 0 , (hsl 0 0 0.5)),
-                (312, 570, 3, 50, 90,  (hsl 0 0 0.5)),
-                (490, 570, 3, 50, 0 , (hsl 0 0 0.5)),
-                (540, 570, 3, 50, 90,  (hsl 0 0 0.5)),
-                (810, 410, 3, 75, 90,  black),
-                (810, 175, 3, 75, 90,  black),
-                (65, 175, 3, 100, 90, black),
-                (65, 425, 3, 100, 90, black),
-                (90, 455, 3, 300, 0, black),
-                (95, 0, 3, 145, 0, black),
-                (700, 445, 3, 160, 0, black),
-                (700, 0, 3, 148, 0, black)
-            ]
-        )
+        -- Draws the white polygon on top of the grey one giving illusion of division lines of the road
+        withPaint (always white) (polygon [(400, 300), (400, 300), (450, 600), (350, 600)])
         `plus`
-        combine (
-            map negativeBranch
-            [
-                (295, 255, (pi / 4), black), 
-                (425, 125, (pi / 4), (hsl 0 0 0.5)), 
-                (470, 430, (pi / 4), (hsl 0 0 0.5)), 
-                (595, 302, (pi / 4), black)
-            ]
-        )
+        -- Draws rectangle that increases in width and height giving illusion of seperation of division lines of the road
+        rectangle firstpoints firstws firsths (always grey)
         `plus`
-        combine (
-            map positiveBranch
-            [
-                (200, 300, (pi / 4), black), 
-                (330, 430, (pi / 4), (hsl 0 0 0.5)), 
-                (375, 125, (pi / 4), (hsl 0 0 0.5)), 
-                (500, 255, (pi / 4), black)
-            ]
-        )
-        `plus`
-        combine (map drawMovingCircle [
-            ([(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)], (always red), 30),
-            ([(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)], (always red), 30)
-        ])
-        -- drawMovingCircle [(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)] (always red) 30
-        -- `plus`
-        -- drawMovingCircle [(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)] (always red) 30
-        `plus`
-        drawMovingCircle [(810, 175), (705, 178), (575, 300), (225, 300), (96, 175), (0, 175), (0, -250), (-200, -200), (900, -250)] (always red) 30
-        `plus`
-        drawMovingCircle (reverse [(810, 175), (705, 178), (575, 300), (225, 300), (96, 175), (0, 175), (0, -250), (-200, -200), (900, -250)]) (always red) 30
-        `plus`
-        drawMovingCircle (reverse [(95, -100), (95, 0), (96, 175), (225, 300), (575, 300), (705, 178), (705, -100)]) (always red) 30
-        `plus`
-        drawMovingCircle (reverse [(95, 700), (95, 900), (96, 425), (225, 300), (575, 300), (705, 415), (705, 700)]) (always red) 30
+        -- Draws rectangle that increases in width and height giving illusion of seperation of division lines of the road
+        rectangle secondpoints secondws secondhs (always grey)
+        where
+            firstpoints = repeatSmooth (390, 300) [(0, (390, 300)), (2, (300,600))]
+            secondpoints = repeatSmooth (390, 300) [(0, (390, 300)), (1, (390, 300)), (3, (300,600))]
+            firstws = repeatSmooth 1 [(0,1), (2,250)]
+            firsths = repeatSmooth 1 [(0,1), (2,100)]
+            secondws = repeatSmooth 1 [(0,1), (1, 1), (3,250)]
+            secondhs = repeatSmooth 1 [(0,1), (1, 1), (3,100)]
 
--- This is  hard to put into list of lists map drawMovingCircle [(),  ]
+    -- Draws an ellipse using the width and height given and cloud can also move depending on Points input.
+    cloud :: Varying Point -> Double -> Double -> Varying Colour -> Animation
+    cloud points height width colour = 
+        withPaint (colour) (translate points (ellipse (always width) (always height)))
 
-drawMovingCircle :: [(Double, Double)] -> Varying Colour -> Double -> Animation
-drawMovingCircle l c r = translate (cycleSmooth 1 l) (withPaint c (circle (always r)))
-
-drawLine :: (Double, Double, Double, Double, Double, Colour) -> Animation
-drawLine (x, y, w, h, a, c) = translate (always (x, y)) (rotate (always a) (withPaint (always c) (rect (always w) (always h))))
-
-positiveBranch :: (Double, Double, Double, Colour) -> Animation
-positiveBranch (x, y, a, c) =  translate (always (x + (100 * cos(a)), y)) (rotate (always 45) (withPaint (always c) (rect (always 3) (always 65))) )
-
-negativeBranch :: (Double, Double, Double, Colour) -> Animation
-negativeBranch (x, y, a, c) =  translate (always (x - (100 * cos(a)), y)) (rotate (always 315) (withPaint (always c) (rect (always 3) (always 65))) )
-
-neuron :: Double -> Double -> Double -> Double -> Animation
-neuron x y w h  = translate (always (x, y)) (rect (always w) (always h))
-
-rotatedNeuron :: Double -> Double -> Animation
-rotatedNeuron x y = translate (always (x, y)) (rotate (always 90) (rect (always 3) (always 260)))
-
-drawEmptyCircle :: (Double, Double, Double, Colour) -> Animation
-drawEmptyCircle (x, y, r, c) = translate (always (x, y)) (withBorder (always c) (always 3) (withoutPaint (circle (always r))))
-
-drawFullCircle :: Double -> Double -> Double -> Colour -> Animation
-drawFullCircle x y r c = translate (always (x, y)) (withPaint (always c) (circle (always r)))
-
-test :: IO()
-test = writeFile "test.svg" (svg 800 600 picture)
+    -- Moves the points in a list by adding the corresponding inputs.
+    movePoints :: Double -> Double -> [Point] -> [Point]
+    movePoints xdif ydif points = 
+        [(x+xdif, y+ydif) | (x,y) <- points]

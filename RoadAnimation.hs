@@ -46,9 +46,9 @@ module MyAnimation where
     -- Lamp travels from start point to end point
     lamp :: Point -> Point -> Animation
     lamp (x1,y1) (x2,y2) = 
-        drawRectangle points width height (always black)
+        rectangle points width height (always black)
         `plus`
-        drawRectangle lightpoints width lightheights (always yellow)
+        rectangle lightpoints width lightheights (always yellow)
         where
             width = repeatSmooth 5 [(1, 5), (2, 15), (3,25)]
             height = repeatSmooth 20 [(1, 20), (2, 210), (3,400)]
@@ -61,7 +61,7 @@ module MyAnimation where
     clouds = 
         combine (
             [
-                drawCloud (cycleSmooth (amount/amountFactor) (movePoints 0 (amount * moveFactor) pointList)) 20 40 (always cloudColour)
+                cloud (cycleSmooth (amount/amountFactor) (movePoints 0 (amount * moveFactor) pointList)) 20 40 (always cloudColour)
                 |
                 amountFactor <- [20,10],
                 amount <- [1..2],
@@ -70,22 +70,21 @@ module MyAnimation where
             ]
         )
         where
-            points = [(x, 100) | x <- ([y,(y+10)..800] ++ [800,790..(y)])]
+            points = [(x, 100) | x <- ([100,110..800] ++ [800,790..100])]
             reversepoints = [(x, 100) | x <- ([800,790..(-50)] ++ [-50,-40..800])]
-            y = 100
     
     -- Draws a blue rectangle over the top half of the picture representing the sky.
     sky :: Animation
-    sky = drawRectangle (always (0,0)) (always 800) (always 300) (always skyColour)
+    sky = rectangle (always (0,0)) (always 800) (always 300) (always skyColour)
     
     -- Draws a green rectangle behind the road representing the green grass in the background (or the side of the road).
     background :: Animation
     background = 
-        drawRectangle (always (0, 300)) (always 800) (always 300) (always backgroundColour)
+        rectangle (always (0, 300)) (always 800) (always 300) (always backgroundColour)
     
     -- Draws a rectangle depending on its input of width, height, colour and can even move depending on the points input.
-    drawRectangle :: Varying Point -> Varying Length -> Varying Length -> Varying Colour -> Animation
-    drawRectangle points width height colour = withPaint colour (translate points (rect width height))
+    rectangle :: Varying Point -> Varying Length -> Varying Length -> Varying Colour -> Animation
+    rectangle points width height colour = withPaint colour (translate points (rect width height))
 
     -- Draws a grey polygon first. Then draws a white polygon on top of it. Then draws two rectangles that go on top of the white polygon which shows an illusion the white polygon being seperated.
     road :: Animation
@@ -97,10 +96,10 @@ module MyAnimation where
         withPaint (always white) (polygon [(400, 300), (400, 300), (450, 600), (350, 600)])
         `plus`
         -- Draws rectangle that increases in width and height giving illusion of seperation of division lines of the road
-        drawRectangle firstpoints firstws firsths (always grey)
+        rectangle firstpoints firstws firsths (always grey)
         `plus`
         -- Draws rectangle that increases in width and height giving illusion of seperation of division lines of the road
-        drawRectangle secondpoints secondws secondhs (always grey)
+        rectangle secondpoints secondws secondhs (always grey)
         where
             firstpoints = repeatSmooth (390, 300) [(0, (390, 300)), (2, (300,600))]
             secondpoints = repeatSmooth (390, 300) [(0, (390, 300)), (1, (390, 300)), (3, (300,600))]
@@ -110,8 +109,8 @@ module MyAnimation where
             secondhs = repeatSmooth 1 [(0,1), (1, 1), (3,100)]
 
     -- Draws an ellipse using the width and height given and cloud can also move depending on Points input.
-    drawCloud :: Varying Point -> Double -> Double -> Varying Colour -> Animation
-    drawCloud points height width colour = 
+    cloud :: Varying Point -> Double -> Double -> Varying Colour -> Animation
+    cloud points height width colour = 
         withPaint (colour) (translate points (ellipse (always width) (always height)))
 
     -- Moves the points in a list by adding the corresponding inputs.
